@@ -7,7 +7,7 @@ function initMap() {
 
     //Get the current location
       if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(showPosition)
+        navigator.geolocation.getCurrentPosition(showPosition)
       } else {
         alert('Geolocation is not supported by this browser');
       }
@@ -15,8 +15,11 @@ function initMap() {
     function showPosition(position) {
       var pos = {
         lat: position.coords.latitude,
-        lng: position.coords.longitude
+        lng: position.coords.longitude,
       };
+
+      console.log(pos);
+      
       infoWindow.setPosition(pos);
       infoWindow.setContent('You are here');
       infoWindow.open(map);
