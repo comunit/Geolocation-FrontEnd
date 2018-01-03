@@ -15,8 +15,8 @@ function initMap(userName) {
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 16,
     center: {
-      lat: -34.397,
-      lng: 150.644
+      lat: 51.576158,
+      lng: 0.090479
     }
   });
 
@@ -28,25 +28,39 @@ function initMap(userName) {
   }
 
   function showPosition(position) {
-    
-    //Send Position to server
-    socket.emit('location', {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-      user: userName
-    });
+
+      //Send Position to server
+      socket.emit('location', {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        user: userName,
+      });
+      
 
     // Listen for events
-    socket.on('location', function (data) {
+      socket.on('location', function (data) {
       var pos = {
         lat: data.lat,
         lng: data.lng
       }
+
       usermarker = new google.maps.InfoWindow;
       usermarker.setPosition(pos);
       usermarker.setContent(data.user);
       usermarker.open(map);
-      map.setCenter(pos);
     });
+    
+    
+    var ownmarkerpos = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+      user: userName,
+    }
+    // Create user own marker
+    ownMarker = new google.maps.InfoWindow;
+    ownMarker.setPosition(ownmarkerpos);
+    ownMarker.setContent(ownmarkerpos.user);
+    ownMarker.open(map);
+    map.setCenter(ownmarkerpos);
   }
 }
