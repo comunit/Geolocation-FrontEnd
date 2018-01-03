@@ -1,4 +1,17 @@
-function initMap() {
+var btn = document.getElementById('btn');
+var map = document.getElementById('map');
+var container = document.getElementById('container');
+var userName = document.getElementById('userName');
+btn.addEventListener('click', getMap);
+
+function getMap() {
+  container.style.display = "none";
+  map.style.display = "block";
+  userName = userName.value;
+  initMap(userName);
+}
+
+function initMap(userName) {
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 16,
     center: {
@@ -6,7 +19,6 @@ function initMap() {
       lng: 150.644
     }
   });
-  infoWindow = new google.maps.InfoWindow;
 
   //Get the current location
   if (navigator.geolocation) {
@@ -16,20 +28,12 @@ function initMap() {
   }
 
   function showPosition(position) {
-    var pos = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-    };
-
-    infoWindow.setPosition(pos);
-    infoWindow.setContent('You are here');
-    infoWindow.open(map);
-    map.setCenter(pos);
-
+    
     //Send Position to server
     socket.emit('location', {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
+      user: userName
     });
 
     // Listen for events
@@ -40,7 +44,7 @@ function initMap() {
       }
       usermarker = new google.maps.InfoWindow;
       usermarker.setPosition(pos);
-      usermarker.setContent('Someone Else');
+      usermarker.setContent(data.user);
       usermarker.open(map);
       map.setCenter(pos);
     });
