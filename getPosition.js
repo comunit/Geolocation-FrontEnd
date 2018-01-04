@@ -9,6 +9,11 @@ function getMap() {
   map.style.display = "block";
   userName = userName.value;
   initMap(userName);
+
+  // send signal to server that new user is connected
+  socket.emit('newUser', {
+    user: userName
+  });
 }
 
 function initMap(userName) {
@@ -38,16 +43,19 @@ function initMap(userName) {
       
 
     // Listen for events
+    socket.on('newUser', function (data) {
+      usermarker = new google.maps.InfoWindow;
+      usermarker.setContent(data.user);
+      usermarker.open(map);
+    })
+
+
       socket.on('location', function (data) {
       var pos = {
         lat: data.lat,
         lng: data.lng
       }
-
-      usermarker = new google.maps.InfoWindow;
-      usermarker.setPosition(pos);
-      usermarker.setContent(data.user);
-      usermarker.open(map);
+       usermarker.setPosition(pos);
     });
     
     
