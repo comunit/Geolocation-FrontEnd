@@ -18,13 +18,14 @@ function getMap() {
 
 function initMap(userName) {
   var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 16,
+    zoom: 10,
     center: {
       lat: 51.576158,
       lng: 0.090479
     }
   });
 
+  var userIds = [];
   //Get the current location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition)
@@ -32,43 +33,38 @@ function initMap(userName) {
     alert('Geolocation is not supported by this browser');
   }
 
+
+
   function showPosition(position) {
 
-      //Send Position to server
-      socket.emit('location', {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        user: userName,
-      });
-      
-
-    // Listen for events
-    socket.on('newUser', function (data) {
-      usermarker = new google.maps.InfoWindow;
-      usermarker.setContent(data.user);
-      usermarker.open(map);
-    })
-
-
-      socket.on('location', function (data) {
-      var pos = {
-        lat: data.lat,
-        lng: data.lng
-      }
-       usermarker.setPosition(pos);
-    });
-    
-    
-    var ownmarkerpos = {
+    //Send Position to server
+    socket.emit('location', {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
       user: userName,
-    }
-    // Create user own marker
-    ownMarker = new google.maps.InfoWindow;
-    ownMarker.setPosition(ownmarkerpos);
-    ownMarker.setContent(ownmarkerpos.user);
-    ownMarker.open(map);
-    map.setCenter(ownmarkerpos);
+      id: socket.id
+    });
+
+    socket.on('location', function (data) {
+
+      var data = data.loc;
+      for (let i = 0; i < data.length; i++) {
+        const element = data[i];
+        var checkUserId = userIds.indexOf(element.id);
+
+        if (checkUserId == -1) {
+          userIds.push(element.id)
+          console.log(userIds);
+          var pos = {
+            lat: element.lat,
+            lng: element.lng,
+          }
+          test = new google.maps.InfoWindow;
+          test.setContent(element.user);
+          test.open(map);
+          test.setPosition(pos);
+        }
+      }
+    });
   }
 }
