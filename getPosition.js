@@ -34,17 +34,17 @@ function initMap(userName) {
     alert('Geolocation is not supported by this browser');
   }
 
-
-
   function showPosition(position) {
-
-    //Send Position to server
+    setInterval(function(){ 
+    //Send Position to server every second
     socket.emit('location', {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
       user: userName,
       id: socket.id
     });
+    }, 1000);
+    
 
     socket.on('location', function (data) {
 
