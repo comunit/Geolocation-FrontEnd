@@ -29,7 +29,7 @@ function initMap(userName) {
   var markers = [];
   //Get the current location
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition)
+    navigator.geolocation.watchPosition(showPosition)
   } else {
     alert('Geolocation is not supported by this browser');
   }
