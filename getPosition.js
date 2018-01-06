@@ -27,15 +27,18 @@ function initMap(userName) {
 
   var userIds = [];
   var markers = [];
-  //Get the current location
+  
+
+  setInterval(function(){ 
+      //Get the current location
   if (navigator.geolocation) {
-    navigator.geolocation.watchPosition(showPosition)
+    navigator.geolocation.getCurrentPosition(showPosition)
   } else {
     alert('Geolocation is not supported by this browser');
   }
+  }, 3000);
 
   function showPosition(position) {
-    setInterval(function(){ 
     //Send Position to server every second
     socket.emit('location', {
       lat: position.coords.latitude,
@@ -43,7 +46,6 @@ function initMap(userName) {
       user: userName,
       id: socket.id
     });
-    }, 10000);
     
 
     socket.on('location', function (data) {
