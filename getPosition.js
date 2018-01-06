@@ -72,11 +72,11 @@ function initMap(userName) {
     // Handle Disconnted User
     socket.on('disconnectId', function (data) {
       for (let i = 0; i < markers.length; i++) {
-            const element = markers[i];
-            if (data.disconnetId == element.id) {
-              markers[i].setMap(null);
-            }
-          }
+        const element = markers[i];
+        if (data.disconnetId == element.id) {
+          markers[i].setMap(null);
+        }
+      }
     });
   }
 }
