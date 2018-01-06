@@ -26,6 +26,7 @@ function initMap(userName) {
   });
 
   var userIds = [];
+  var markers = [];
   //Get the current location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition)
@@ -54,7 +55,6 @@ function initMap(userName) {
 
         if (checkUserId == -1) {
           userIds.push(element.id)
-          console.log(userIds);
           var pos = {
             lat: element.lat,
             lng: element.lng,
@@ -63,8 +63,20 @@ function initMap(userName) {
           test.setContent(element.user);
           test.open(map);
           test.setPosition(pos);
+          test.set("id", element.id);
+          markers.push(test);
         }
       }
+    });
+
+    // Handle Disconnted User
+    socket.on('disconnectId', function (data) {
+      for (let i = 0; i < markers.length; i++) {
+            const element = markers[i];
+            if (data.disconnetId == element.id) {
+              markers[i].setMap(null);
+            }
+          }
     });
   }
 }
