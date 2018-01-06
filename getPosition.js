@@ -43,7 +43,7 @@ function initMap(userName) {
       user: userName,
       id: socket.id
     });
-    }, 1000);
+    }, 10000);
     
 
     socket.on('location', function (data) {
