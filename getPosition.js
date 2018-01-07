@@ -29,14 +29,13 @@ function initMap(userName) {
   var markers = [];
   
 
-  setInterval(function(){ 
-      //Get the current location
+  // setInterval(function(){ 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition)
   } else {
     alert('Geolocation is not supported by this browser');
   }
-  }, 3000);
+
 
   function showPosition(position) {
     //Send Position to server every second
