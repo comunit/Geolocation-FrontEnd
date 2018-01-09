@@ -82,10 +82,8 @@ function initMap(userName) {
             users[objIndex].user = element.user;
           });
         }
-
-        var checkUserId = userIds.indexOf(element.id);
-        if (checkUserId == -1) {
-          userIds.push(element.id)
+      }
+    });
 
           for (let i = 0; i < users.length; i++) {
             const mark = users[i];
@@ -98,10 +96,6 @@ function initMap(userName) {
           }
           console.log(users);
           console.log(markers);
-        }
-          
-      }
-    });
 
 
     // Handle Disconnted User
