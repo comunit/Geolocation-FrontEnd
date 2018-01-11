@@ -61,8 +61,12 @@ function initMap(userName) {
 
       for (var i = 0; i < data.length; i++) {
         var pushData = data[i];
-        pushDataId.push(pushData.id);
-        var obj = users.find(o => o.id === data.id);
+
+        var objId = pushDataId.find(o => o === pushData.id);
+        if (objId == undefined) {
+          pushDataId.push(pushData.id);
+        }
+        var obj = users.find(o => o.id === pushData.id);
         if (obj == undefined) {
           users.push(pushData)
         }
@@ -78,14 +82,15 @@ function initMap(userName) {
       }
     });
 
-    //Loop through users and create marker 
-    for (let i = 0; i < users.length; i++) {
-      for (let i = 0; i < pushDataId.length; i++) {
-        var pushDataIds = pushDataId[i];
-        var checkUserId = userIds.indexOf(pushDataIds);
-        if (checkUserId == -1) {
-          const mark = users[i];
-          userIds.push(pushDataIds)
+    setInterval(function () {
+      //Loop through users and create marker 
+      for (let i = 0; i < users.length; i++) {
+        for (let i = 0; i < pushDataId.length; i++) {
+          var pushDataIds = pushDataId[i];
+          var checkUserId = userIds.indexOf(pushDataIds);
+          if (checkUserId == -1) {
+            const mark = users[i];
+            userIds.push(pushDataIds)
             test = new google.maps.InfoWindow;
             test.setContent(mark.user);
             test.open(map);
@@ -95,11 +100,10 @@ function initMap(userName) {
             });
             test.set("id", mark.id);
             markers.push(test);
-          console.log(mark);
-          
+          }
         }
       }
-    }
+    }, 5000);
 
     // Handle Disconnted User
     socket.on('disconnectId', function (data) {
@@ -115,6 +119,13 @@ function initMap(userName) {
         const user = users[i];
         objIndex = users.findIndex((obj => obj.id == data.disconnetId));
         users.splice(objIndex, 1);
+      }
+
+      for (let i = 0; i < pushDataId.length; i++) {
+        const id = pushDataId[i];
+        if (id == data.disconnetId) {
+          pushDataId.splice(i, 1);
+        }
       }
     });
   }
