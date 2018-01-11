@@ -36,22 +36,28 @@ function initMap(userName) {
   var userIds = [];
   var pushDataId = [];
 
-  // Get location of user
+
+  setInterval(function () {
+    // Get location of user
     if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(showPosition)
+      navigator.geolocation.getCurrentPosition(showPosition)
     } else {
       alert('Geolocation is not supported by this browser');
     }
-
+  }, 3000);
 
   //send position to server  every 5 seconds
   function showPosition(position) {
-    socket.emit('location', {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-      user: userName,
-      id: socket.id
-    });
+
+    setInterval(function () {
+      socket.emit('location', {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        user: userName,
+        id: socket.id
+      });
+    }, 3000);
+
 
     //listen for events
     socket.on('location', function (data) {
