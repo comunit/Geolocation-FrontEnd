@@ -37,13 +37,11 @@ function initMap(userName) {
   var pushDataId = [];
 
   // Get location of user
-  setInterval(function () {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition)
+      navigator.geolocation.watchPosition(showPosition)
     } else {
       alert('Geolocation is not supported by this browser');
     }
-  }, 5000);
 
 
   //send position to server  every 5 seconds
