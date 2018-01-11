@@ -34,6 +34,7 @@ function initMap(userName) {
   var markers = [];
   var users = [];
   var userIds = [];
+  var pushDataId = [];
 
   // Get location of user
   setInterval(function () {
@@ -42,7 +43,7 @@ function initMap(userName) {
     } else {
       alert('Geolocation is not supported by this browser');
     }
-  }, 10000);
+  }, 5000);
 
 
   //send position to server  every 5 seconds
@@ -54,49 +55,51 @@ function initMap(userName) {
       id: socket.id
     });
 
-
     //listen for events
     socket.on('location', function (data) {
       var data = data.loc;
-      // loop through data coming from server
-      for (let i = 0; i < data.length; i++) {
-        const element = data[i];
-        //create a object of users and thier location
-        getuser = {
-          lat: element.lat,
-          lng: element.lng,
-          user: element.user,
-          id: element.id
-        }
-        //if user already exists in users update thier locaation else add to user
-        let obj = users.find(o => o.id === element.id);
+
+      for (var i = 0; i < data.length; i++) {
+        var pushData = data[i];
+        pushDataId.push(pushData.id);
+        var obj = users.find(o => o.id === data.id);
         if (obj == undefined) {
-          users.push(getuser);
-        } else {
-          let obj = users.find((o, i) => {
-            //Find index of user using user method.    
-            objIndex = users.findIndex((obj => obj.id == element.id));
-            //Update object's lat and lng property.
-            users[objIndex].lat = element.lat;
-            users[objIndex].lng = element.lng;
-            users[objIndex].user = element.user;
-          });
+          users.push(pushData)
         }
+
+        let user = users.find((o, i) => {
+          //Find index of lat and lng using using findIndex method.    
+          objIndex = users.findIndex((user => user.id == pushData.id));
+          //Update userslat and lng property.
+          users[objIndex].lat = pushData.lat;
+          users[objIndex].lng = pushData.lng;
+          users[objIndex].user = pushData.user;
+        });
       }
     });
 
-          for (let i = 0; i < users.length; i++) {
-            const mark = users[i];
+    //Loop through users and create marker 
+    for (let i = 0; i < users.length; i++) {
+      for (let i = 0; i < pushDataId.length; i++) {
+        var pushDataIds = pushDataId[i];
+        var checkUserId = userIds.indexOf(pushDataIds);
+        if (checkUserId == -1) {
+          const mark = users[i];
+          userIds.push(pushDataIds)
             test = new google.maps.InfoWindow;
             test.setContent(mark.user);
             test.open(map);
-            test.setPosition({lat: mark.lat, lng: mark.lng});
+            test.setPosition({
+              lat: mark.lat,
+              lng: mark.lng
+            });
             test.set("id", mark.id);
             markers.push(test);
-          }
-          console.log(users);
-          console.log(markers);
-
+          console.log(mark);
+          
+        }
+      }
+    }
 
     // Handle Disconnted User
     socket.on('disconnectId', function (data) {
@@ -106,6 +109,7 @@ function initMap(userName) {
           markers[i].setMap(null);
         }
       }
+
 
       for (let i = 0; i < users.length; i++) {
         const user = users[i];
