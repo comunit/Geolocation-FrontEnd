@@ -86,7 +86,7 @@ function initMap(userName) {
       }
     });
 
-    setInterval(function () {
+    // setInterval(function () {
       //Loop through users and create marker 
       for (let i = 0; i < users.length; i++) {
         for (let i = 0; i < pushDataId.length; i++) {
@@ -104,10 +104,27 @@ function initMap(userName) {
             });
             test.set("id", mark.id);
             markers.push(test);
+          } else {
+            socket.on('location', function (data) {
+              var data = data.loc;
+              for (var i = 0; i < data.length; i++) {
+                var pushData = data[i];
+                for (let i = 0; i < markers.length; i++) {
+                  const marker = markers[i];
+                  if (marker.id == pushData.id) {
+                    newLatlng = {
+                      lat: pushData.lat,
+                      lng: pushData.lng
+                    }
+                    marker.setPosition(newLatlng);
+                  }
+                }
+              }
+            });
           }
         }
       }
-    }, 5000);
+    // }, 5000);
 
     // Handle Disconnted User
     socket.on('disconnectId', function (data) {
