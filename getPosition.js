@@ -38,7 +38,7 @@ function initMap(userName) {
 
 
   function showPosition(position) {
-    //Send Position to server every second
+    //Send Position to server 
     socket.emit('location', {
       lat: position.coords.latitude,
       lng: position.coords.longitude,
@@ -68,11 +68,9 @@ function initMap(userName) {
     });
 
     socket.on('location', function (data) {
-
       var data = data.loc;
       for (let i = 0; i < data.length; i++) {
         const element = data[i];
-        setInterval(function () {
           let user = markers.find((o, i) => {
             // Find index of markers 
             objIndex = markers.findIndex((marker => marker.id == element.id));
@@ -83,7 +81,6 @@ function initMap(userName) {
             }
             markers[objIndex].setPosition(newLatlng);
           });
-        }, 10000);
       }
     });
 
