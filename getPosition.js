@@ -48,15 +48,9 @@ function initMap(userName) {
 
 
     socket.on('location', function (data) {
-
       var data = data.loc;
       for (let i = 0; i < data.length; i++) {
         const element = data[i];
-        var checkUserId = userIds.indexOf(element.id);
-
-        if (checkUserId == -1) {
-          userIds.push(element.id)
-        }
 
         var objId = markers.find(o => o.id == element.id);
         if (objId == undefined) {
@@ -78,22 +72,22 @@ function initMap(userName) {
       var data = data.loc;
       for (let i = 0; i < data.length; i++) {
         const element = data[i];
-        setInterval(function(){
+        setInterval(function () {
           let user = markers.find((o, i) => {
-          // Find index of markers 
-          objIndex = markers.findIndex((marker => marker.id == element.id));
-          // Update location
-          newLatlng = {
-            lat: element.lat,
-            lng: element.lng
-          }
-          markers[objIndex].setPosition(newLatlng);
-        });
+            // Find index of markers 
+            objIndex = markers.findIndex((marker => marker.id == element.id));
+            // Update location
+            newLatlng = {
+              lat: element.lat,
+              lng: element.lng
+            }
+            markers[objIndex].setPosition(newLatlng);
+          });
         }, 10000);
       }
     });
 
-    
+
 
     // Handle Disconnted User
     socket.on('disconnectId', function (data) {
