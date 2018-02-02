@@ -1,2 +1,2 @@
 //Make Connection
-var socket = io('https://calm-sea-52227.herokuapp.com', {'forceNew':true });
+var socket = io('https://calm-sea-52227.herokuapp.com');
